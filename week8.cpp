@@ -78,22 +78,22 @@ int main() {
     Book harryPotter{"Harry Potter"};
     Book percyJackson{"Percy Jackson"};
     bookLibrary.add(harryPotter);
-//    bookLibrary.add(percyJackson);
-//
-//    // create a description and add it between the two books
-//    Description d{"Percy Jackson is a similar childrens book that readers of Harry Potter may like"};
-//    bookLibrary.addRelated(harryPotter,percyJackson,d);
-//
-//    // print books related to Harry Potter
-//    bookLibrary.printRelated(harryPotter);
-//
-//    std::cout << std::boolalpha << "confirming that Percy Jackson is in library: " << bookLibrary.inLibrary(percyJackson) << std::endl;
-//
-//    // remove Percy Jackson
-//    std::cout << "number of items in library after removal: " << bookLibrary.remove(percyJackson) << std::endl;
-//
-//    std::cout << std::boolalpha << "confirming that Percy Jackson is in library: " << bookLibrary.inLibrary(percyJackson) << std::endl;
-//
-//    // print books related to Harry Potter
-//    bookLibrary.printRelated(harryPotter);
+    bookLibrary.add(percyJackson);
+
+    // create a description and add it between the two books
+    Description d{"Percy Jackson is a similar childrens book that readers of Harry Potter may like"};
+    bookLibrary.addRelated(harryPotter,percyJackson,d);
+
+    // print books related to Harry Potter
+    bookLibrary.printRelated(harryPotter);
+
+    std::cout << std::boolalpha << "confirming that Percy Jackson is in library: " << bookLibrary.inLibrary(percyJackson) << std::endl;
+
+    // remove Percy Jackson
+    std::cout << "number of items in library after removal: " << bookLibrary.remove(percyJackson) << std::endl;
+
+    std::cout << std::boolalpha << "confirming that Percy Jackson is in library: " << bookLibrary.inLibrary(percyJackson) << std::endl;
+
+    // print books related to Harry Potter
+    bookLibrary.printRelated(harryPotter);
 }

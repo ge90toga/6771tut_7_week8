@@ -18,7 +18,7 @@ public:
     bool inLibrary(const T& item);
 
 private:
-
+    class RelatedWork;
     // private inner class to hold objects of type T in the library.
     class ItemContainer {
     public:
@@ -32,24 +32,23 @@ private:
         void printRelated();
 
     private:
-
-        // private inner class to hold information about related works.
-        class RelatedWork {
-        public:
-            RelatedWork(const ItemContainer& link, const U& desc);
-            void printItemAndDescription();
-        private:
-            // private data members of RelatedWork
-            U relatedWorkDescription;
-            //std::shared_ptr<T> relatedWorkLink;
-            std::weak_ptr<T> relatedWorkLink;
-        };
-
-
         // private data members of ItemContainer
         std::shared_ptr<T> itemPtr;
         std::vector<RelatedWork> relatedWorks;
     };
+
+    // private inner class to hold information about related works.
+    class RelatedWork {
+    public:
+        RelatedWork(const ItemContainer& link, const U& desc);
+        void printItemAndDescription();
+    private:
+        // private data members of RelatedWork
+        U relatedWorkDescription;
+        //std::shared_ptr<T> relatedWorkLink;
+        std::weak_ptr<T> relatedWorkLink;
+    };
+
 
     // private data member of Library Class
     std::vector<ItemContainer> items;
@@ -130,13 +129,13 @@ void Library<T,U>::ItemContainer::printRelated() {
 
 // constructor for a related works object
 template <typename T, typename U>
-Library<T,U>::ItemContainer::RelatedWork::RelatedWork(const ItemContainer& link, const U& desc) : relatedWorkDescription{desc} {
+Library<T,U>::RelatedWork::RelatedWork(const ItemContainer& link, const U& desc) : relatedWorkDescription{desc} {
     relatedWorkLink = link.getItemPtr();
 }
 
 // method to print the item and description of a related work.
 template <typename T, typename U>
-void Library<T,U>::ItemContainer::RelatedWork::printItemAndDescription() {
+void Library<T,U>::RelatedWork::printItemAndDescription() {
     //std::cout << *(relatedWorkLink) << " - " << relatedWorkDescription << std::endl;
     auto sp = relatedWorkLink.lock();
     if(sp != nullptr) std::cout << *(sp) << " - " << relatedWorkDescription << std::endl;
