@@ -1,2 +1,64 @@
-COMP6771 tutorial7 week8
-Topic: Class Template
+### CS6771 Tutorial 2016
+
+Custom Iterators
+
+This week's tutorial uses the same Library class template code as week 8.
+Download the following starter code or continue using your code from last week: Library.hpp week9.cpp
+Consider the design of a library. A library may hold books, movies, or some other collection of objects. Each object is stored in the library. Additionally each object in the library may have some related works (e.g., related books or movies - of the same type as the library) with a description describing why they are related. Related works between two objects are not transitive, that is, if item A is related to item B, item B may not be related to item A. The starter code encapsulates these key requirements.
+Read through the starter code and ensure that you understand the relationships between the classes and the use of nested classes, smart pointers, and lamda functions.
+Compile the starter code using the command
+g++ -std=c++11 -Wall -Werror week9.cpp -o week9
+The current output of the week9.cpp file is:
+Percy Jackson - Percy Jackson is a similar childrens book that readers of Harry Potter may like
+confirming that Percy Jackson is in library: true
+Create a LibraryItemIterator class to iterate forwards through and potentially modify items stored in the library class. Use the following starter code to begin:
+template <typename T>
+class LibraryItemIterator {
+public:
+  typedef std::ptrdiff_t                     difference_type;
+  typedef TODO: AN_ITERATOR_TAG          iterator_category;
+  typedef T                                  value_type;
+  typedef T*                                 pointer;
+  typedef T&                                 reference;
+
+  reference operator*() const;
+  pointer operator->() const { return &(operator*()); }
+  LibraryItemIterator& operator++();
+  bool operator==(const LibraryItemIterator& other) const;
+  bool operator!=(const LibraryItemIterator& other) const { return !operator==(other); }
+
+  // TODO: constructor
+private:
+  // TODO: private data members.
+};
+What iterator_category tag should we use if we want to iterate forwards through the items and potentially modify them?
+The iterator should be over a collection of T. In our library class design T objects are wrapped in a shared_ptr and then an Item container class. What private data might the custom iterator have to store to iterate correctly (remember the iterator should not expose the internal structure of the Library class only the internal data of type T)?
+Create a constructor for the LibraryItemIterator class which takes in the required private data members.
+Create begin() and end() member functions in the Library class to return LibraryItemIterator class objects.
+Test your begin() and end() functions by calling them from the week9.cpp test file:
+auto it = bookLibrary.begin();
+auto itEnd = bookLibrary.end();
+Define the prefix ++ operator member function to move the iterator onto the next object in the container. Test your code in week9.cpp with:
+++it;
+Define the deference operator* member function and test with:
+std::cout << *it << std::endl;
+The new line of output should be:
+Percy Jackson
+Define the equality operator member functions.
+Test your iterator using the C++11 range-based for loop:
+for (auto books : bookLibrary) {
+	std::cout << books << std::endl;
+}
+The additional output should be:
+Harry Potter
+Percy Jackson
+Show that your iterator allows the data in the collection to be modified with the following code:
+*it = Book("Lord of the Rings");
+bookLibrary.printRelated(harryPotter);
+The extra output should be:
+Lord of the Rings - Percy Jackson is a similar childrens book that readers of Harry Potter may like
+Define the pointer arrow operator-> member function show that it works by adding the following to week9.cpp
+auto ptrTest = it.operator->();
+std::cout << ptrTest << " " << *ptrTest << std::endl;
+The output should be similar to:
+0x24b7ce0 Lord of the Rings
