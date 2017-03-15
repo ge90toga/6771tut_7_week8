@@ -1,64 +1,67 @@
-### CS6771 Tutorial 2016
+<h2>CS6771 Tutorial 2016</h2>
+<h2>Week Eight</h2>
 
-Custom Iterators
+<h3>Class Templates</h3>
 
-This week's tutorial uses the same Library class template code as week 8.
-Download the following starter code or continue using your code from last week: Library.hpp week9.cpp
-Consider the design of a library. A library may hold books, movies, or some other collection of objects. Each object is stored in the library. Additionally each object in the library may have some related works (e.g., related books or movies - of the same type as the library) with a description describing why they are related. Related works between two objects are not transitive, that is, if item A is related to item B, item B may not be related to item A. The starter code encapsulates these key requirements.
-Read through the starter code and ensure that you understand the relationships between the classes and the use of nested classes, smart pointers, and lamda functions.
-Compile the starter code using the command
-g++ -std=c++11 -Wall -Werror week9.cpp -o week9
-The current output of the week9.cpp file is:
+<!--<strong>Topics Covered:</strong>
+<ul><li>Exception Handling</li>
+<li>Lamda Functions</li>
+<li>Shared and Weak Pointers</li> 
+<li>Unique Pointers and Ownership</li>
+<li>Trailing Return Types</li>
+</ul>-->
+
+<ol>
+<li><strong>Download</strong> the following starter code: <a href="Library.hpp">Library.hpp</a> <a href="week8.cpp">week8.cpp</a></li>	
+<li><strong>Consider</strong> the design of a library. A library may hold books, movies, or some other collection of objects. 
+Each object is stored in the library. 
+Additionally each object in the library may have some related works (e.g., related books or movies - of the same type as the library) with a description describing why they are related.
+Related works between two objects are not transitive, that is, if item A is related to item B, item B may not be related to item A.
+The starter code encapsulates these key requirements.</li>
+<li><strong>Read</strong> through the starter code and ensure that you understand the relationships between the classes and the use of nested classes, smart pointers, and lamda functions.</li>
+<li><strong>Compile</strong> the starter code using the command
+<pre>
+g++ -std=c++11 -Wall -Werror week8.cpp -o week8
+</pre></li>
+<li><Strong>The expected output</Strong> of the week8.cpp file is: 
+<pre>
 Percy Jackson - Percy Jackson is a similar childrens book that readers of Harry Potter may like
 confirming that Percy Jackson is in library: true
-Create a LibraryItemIterator class to iterate forwards through and potentially modify items stored in the library class. Use the following starter code to begin:
-template <typename T>
-class LibraryItemIterator {
-public:
-  typedef std::ptrdiff_t                     difference_type;
-  typedef TODO: AN_ITERATOR_TAG          iterator_category;
-  typedef T                                  value_type;
-  typedef T*                                 pointer;
-  typedef T&                                 reference;
-
-  reference operator*() const;
-  pointer operator->() const { return &(operator*()); }
-  LibraryItemIterator& operator++();
-  bool operator==(const LibraryItemIterator& other) const;
-  bool operator!=(const LibraryItemIterator& other) const { return !operator==(other); }
-
-  // TODO: constructor
-private:
-  // TODO: private data members.
-};
-What iterator_category tag should we use if we want to iterate forwards through the items and potentially modify them?
-The iterator should be over a collection of T. In our library class design T objects are wrapped in a shared_ptr and then an Item container class. What private data might the custom iterator have to store to iterate correctly (remember the iterator should not expose the internal structure of the Library class only the internal data of type T)?
-Create a constructor for the LibraryItemIterator class which takes in the required private data members.
-Create begin() and end() member functions in the Library class to return LibraryItemIterator class objects.
-Test your begin() and end() functions by calling them from the week9.cpp test file:
-auto it = bookLibrary.begin();
-auto itEnd = bookLibrary.end();
-Define the prefix ++ operator member function to move the iterator onto the next object in the container. Test your code in week9.cpp with:
-++it;
-Define the deference operator* member function and test with:
-std::cout << *it << std::endl;
-The new line of output should be:
-Percy Jackson
-Define the equality operator member functions.
-Test your iterator using the C++11 range-based for loop:
-for (auto books : bookLibrary) {
-	std::cout << books << std::endl;
-}
-The additional output should be:
-Harry Potter
-Percy Jackson
-Show that your iterator allows the data in the collection to be modified with the following code:
-*it = Book("Lord of the Rings");
-bookLibrary.printRelated(harryPotter);
-The extra output should be:
-Lord of the Rings - Percy Jackson is a similar childrens book that readers of Harry Potter may like
-Define the pointer arrow operator-> member function show that it works by adding the following to week9.cpp
-auto ptrTest = it.operator->();
-std::cout << ptrTest << " " << *ptrTest << std::endl;
-The output should be similar to:
-0x24b7ce0 Lord of the Rings
+number of items in library after removal: 1
+confirming that Percy Jackson is in library: false
+</pre>
+<strong>However,</strong> there are some missing functionality and bugs in the starter code. The current output is:
+<pre>
+Percy Jackson - Percy Jackson is a similar childrens book that readers of Harry Potter may like
+confirming that Percy Jackson is in library: true
+number of items in library after removal: 2
+confirming that Percy Jackson is in library: true
+Percy Jackson - Percy Jackson is a similar childrens book that readers of Harry Potter may like
+</pre>
+<strong>The most apparent bug in the current output</strong> is that items are not being removed from the library and extra content is being printed as a result.</li>
+<li><strong>Correct the remove function</strong> to ensure that the item is removed from the library (Hint: pass an iterator to the item to items.erase()).</li>
+<li>A new bug will have now appeared where despite removing the item from the library the related works object is still being printed. <br />
+<strong>Modify the RelatedWork class</strong> to ensure that if an item is removed from the library that it is removed from memory (hint: use a weak_ptr rather than a complex algorithm to find all references to the item).</li>
+<li>When we compile and/or run the code now we may get an error or segmentation fault. <strong>Correct the function printRelated</strong> to correctly lock and check the weak_ptr before dereferencing.
+</li>
+<li><strong>Another problem</strong> with the functionality of the program is we can add multiple duplicate objects, e.g.,
+<pre>
+bookLibrary.add(harryPotter);
+bookLibrary.add(harryPotter);
+bookLibrary.add(harryPotter);
+bookLibrary.add(harryPotter);</pre>
+<strong>Modify</strong> the addItem function to check that the item doesn't already exist in the library.</li>
+<li><strong>Furthermore</strong> ensure that the following code doesn't insert multiple duplicate books as the book objects should be unique in the library:
+<pre>
+Book harryPotter{"Harry Potter"};
+Book harryPotter1{"Harry Potter"};
+Book harryPotter2{"Harry Potter"};
+bookLibrary.add(harryPotter);
+bookLibrary.add(harryPotter2);
+bookLibrary.add(harryPotter3);
+</pre>
+</li>
+<li><strong>Discuss</strong> other designs for this system. In particular, are there benefits/disadvantages to using the private inner classes (think about encapsulation and object scope)? Are there benefits/disadvantages to wrapping T objects in ItemContainer objects?</li>
+<li><strong>Create the Movie class</strong> and test that you can create a library of Movie objects.</li>
+<li><strong>Try</strong> to use the library for containers of other types (maybe a Toy library, or a Library of Library Objects?).</li>
+</ul>
